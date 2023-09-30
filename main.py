@@ -2,6 +2,7 @@ import cv2
 
 # FILTER Options: sunglasses, glasses, coolglasses
 FILTER = 'glasses'
+ALL_FILTERS = ['glasses', 'sunglasses', 'coolglasses']
 FILTER_PATH = f'./images/{FILTER}-alpha.png'
 # Command I used for generating alpha channel (transparent background):
 #
@@ -67,6 +68,12 @@ while True:
     if cv2.waitKey(1) & 0xFF == ord('q'):
         # break on "q" press
         break
+    # Switch filter on "s" key press
+    elif cv2.waitKey(1) & 0xFF == ord('s'):
+        idx = ALL_FILTERS.index(FILTER)
+        FILTER = ALL_FILTERS[0 if idx == len(ALL_FILTERS) - 1 else idx + 1]
+        sunglasses, sunglasses_height, sunglasses_resized = read_image(
+            FILTER_PATH)
 
 cap.release()
 cv2.destroyAllWindows()
