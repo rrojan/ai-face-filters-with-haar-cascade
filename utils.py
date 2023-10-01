@@ -2,7 +2,7 @@ import cv2
 
 
 def get_filter_path(filter_name):
-    return f'./images/{filter_name}-alpha.png'
+    return f'./filters/{filter_name}-alpha.png'
 
 
 def read_image(filter_path):
