@@ -16,5 +16,5 @@ def read_image(filter_path):
 
 
 def switch_filter(current_filter, ALL_FILTERS):
-    idx = ALL_FILTERS.index(filter)
-    filter = ALL_FILTERS[0 if idx == len(ALL_FILTERS) - 1 else idx + 1]
+    idx = ALL_FILTERS.index(current_filter)
+    return ALL_FILTERS[0 if idx == len(ALL_FILTERS) - 1 else idx + 1]
