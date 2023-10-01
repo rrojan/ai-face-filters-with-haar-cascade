@@ -1,10 +1,11 @@
 import cv2
+from utils import get_filter_path, read_image, switch_filter
 
-# FILTER Options: sunglasses, glasses, coolglasses
-FILTER = 'glasses'
+# Set default filter as 'glasses'
+filter = 'glasses'
+filter_path = get_filter_path(filter)
 ALL_FILTERS = ['glasses', 'sunglasses', 'coolglasses']
-FILTER_PATH = f'./images/{FILTER}-alpha.png'
-# Command I used for generating alpha channel (transparent background):
+# Command I used for generating alpha channel image (transparent background):
 #
 # convert glasses.png   -alpha on -background none -flatten glasses-alpha.png
 #
@@ -12,20 +13,10 @@ FILTER_PATH = f'./images/{FILTER}-alpha.png'
 # NOTE: so best use thi imagemagick command just in case
 
 
-def read_image(filter_path):
-    sunglasses = cv2.imread(FILTER_PATH, cv2.IMREAD_UNCHANGED)
-
-    # Resize the sunglasses to half of its original height
-    sunglasses_height = int(sunglasses.shape[0] / 2)
-    sunglasses_resized = cv2.resize(
-        sunglasses, (sunglasses.shape[1], sunglasses_height))
-    return sunglasses, sunglasses_height, sunglasses_resized
-
-
 face_cascade = cv2.CascadeClassifier(
     cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
-sunglasses, sunglasses_height, sunglasses_resized = read_image(FILTER_PATH)
+sunglasses, sunglasses_height, sunglasses_resized = read_image(filter_path)
 
 
 cap = cv2.VideoCapture(0)
@@ -47,11 +38,11 @@ while True:
     for (x, y, w, h) in faces:
         # Resize the sunglasses image to match the dimensions of the detected face (ROI)
         # TODO: Since we're working with glasses we should actually match to the eyes intead of performing full face detectin
-        # TODO: and overlaying to the full fce. However eye detection is very poor
+        # TODO: and overlaying to the full face.
         sunglasses_resized = cv2.resize(sunglasses, (w, h))
 
         # Extract the region of interest
-        # (this is the frame where the sunglasses will be placed
+        # (this is the frame where the sunglasses will be placed)
         roi = frame[y:y+h, x:x+w]
 
         # Create glasses mask and invert for ares
@@ -65,15 +56,15 @@ while True:
 
     cv2.imshow('Haarcascade Mayajaal', frame)
 
+    # break on "q" press
     if cv2.waitKey(1) & 0xFF == ord('q'):
-        # break on "q" press
         break
     # Switch filter on "s" key press
     elif cv2.waitKey(1) & 0xFF == ord('s'):
-        idx = ALL_FILTERS.index(FILTER)
-        FILTER = ALL_FILTERS[0 if idx == len(ALL_FILTERS) - 1 else idx + 1]
+        filter = switch_filter(filter, ALL_FILTERS)
+        filter_path = get_filter_path(filter)
         sunglasses, sunglasses_height, sunglasses_resized = read_image(
-            FILTER_PATH)
+            filter_path)
 
 cap.release()
 cv2.destroyAllWindows()
