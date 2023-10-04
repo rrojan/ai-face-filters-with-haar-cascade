@@ -24,7 +24,7 @@ def login():
     data = request.get_json()
     if 'email' in data and 'password' in data:
         return jsonify({
-            "is_login_successful": data['email'] == "menuka@gmail.com" and data['password'] == "password"
+            "is_login_successful": data['email'] == "test@gmail.com" and data['password'] == "password"
         })
 
 
